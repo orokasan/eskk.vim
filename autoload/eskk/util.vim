@@ -1,4 +1,4 @@
-" vim:foldmethod=marker:fen:sw=4:sts=4
+" vim:foldmethod=marker:fen:sw=4
 scriptencoding utf-8
 
 
@@ -260,7 +260,34 @@ function! eskk#util#getchar(...) abort "{{{
     let module = s:Vital.Prelude
     return call(module.getchar_safe, a:000, module)
 endfunction "}}}
-function! eskk#util#input(...) abort "{{{
+function! eskk#util#prompt(prompt, ...) abort
+    let save_imsearch = &l:imsearch
+
+    call eskk#create_new_instance()
+    if a:0
+        let &l:imsearch = a:1
+    endif
+
+    try
+        redraw
+        let input  = s:input(a:prompt)
+    catch /^Vim:Interrupt$/
+        let input = ''
+    finally
+        try
+            call eskk#destroy_current_instance()
+        catch /^eskk:/
+            call eskk#log_warn('eskk#destroy_current_instance()')
+        endtry
+
+        " Enable language mappings because eskk may be disabled
+        call eskk#map#map_all_keys()
+
+        let &l:imsearch = save_imsearch
+    endtry
+    return input
+endfunction
+function! s:input(...) abort "{{{
     let module = s:Vital.Prelude
     return call(module.input_safe, a:000, module)
 endfunction "}}}

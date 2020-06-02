@@ -1,4 +1,4 @@
-" vim:foldmethod=marker:fen:sw=4:sts=4
+" vim:foldmethod=marker:fen:sw=4
 scriptencoding utf-8
 
 
@@ -1813,6 +1813,10 @@ function! eskk#enable() abort "{{{
     if g:eskk#enable_completion
         let inst.omnifunc_save = &l:omnifunc
         let &l:omnifunc = 'eskk#complete#eskkcomplete'
+
+        " Note: "menuone" is needed.
+        " If "menu" mode, pumvisible() does not work for only one match.
+        set completeopt+=menuone
     endif
 
     if mode() =~# '^[ic]$'
