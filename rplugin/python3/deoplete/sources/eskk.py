@@ -43,9 +43,10 @@ class Source(Base):
         self.min_pattern_length = 0
 
     def get_complete_position(self, context):
-        if not self.vim.call('eskk#is_enabled') or re.search(
-                r'[a-zA-Z]$', context['input']):
+        if not self.vim.call('eskk#is_enabled'):
             return -1
+        if re.search(r'[a-zA-Z]$', context['input']):
+            pass
         return self.vim.call('eskk#complete#eskkcomplete', 1, '')
 
     def gather_candidates(self, context):
